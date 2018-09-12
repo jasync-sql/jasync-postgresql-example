@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.61"
-    compile 'com.github.jasync-sql:jasync-postgresql:0.8.20'
+    compile 'com.github.jasync-sql:jasync-postgresql:0.8.21'
     compile "log4j:log4j:1.2.17"
     compile "org.slf4j:slf4j-log4j12:1.7.25"
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.25.0'

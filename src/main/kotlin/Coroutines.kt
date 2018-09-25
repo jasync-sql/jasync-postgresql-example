@@ -4,10 +4,13 @@ import com.github.jasync.sql.db.Configuration
 import com.github.jasync.sql.db.Connection
 import com.github.jasync.sql.db.QueryResult
 import com.github.jasync.sql.db.general.ArrayRowData
-import com.github.jasync.sql.db.postgresql.PostgreSQLConnection
+import com.github.jasync.sql.db.pool.ConnectionPool
+import com.github.jasync.sql.db.pool.PoolConfiguration
+import com.github.jasync.sql.db.postgresql.pool.PostgreSQLConnectionFactory
 import kotlinx.coroutines.experimental.future.await
 import kotlinx.coroutines.experimental.launch
 import mu.KotlinLogging
+import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger {}
 
@@ -18,14 +21,21 @@ fun main(args: Array<String>) {
   logger.info("starting info")
   logger.debug("starting debug")
   logger.trace("starting trace")
-  val connection: Connection = PostgreSQLConnection(
-      Configuration(
-          username = "username",
-          password = "password",
-          host = "host.com",
-          port = 3306,
-          database = "schema"
-      )
+  val poolConfiguration = PoolConfiguration(
+      100,                            // maxObjects
+      TimeUnit.MINUTES.toMillis(15),  // maxIdle
+      10_000,                         // maxQueueSize
+      TimeUnit.SECONDS.toMillis(30)   // validationInterval
+  )
+  val connection: Connection = ConnectionPool(
+      PostgreSQLConnectionFactory(
+          Configuration(
+              username = "username",
+              password = "password",
+              host = "host.com",
+              port = 3306,
+              database = "schema"
+          )), poolConfiguration
   )
   connection.connect().get()
 
